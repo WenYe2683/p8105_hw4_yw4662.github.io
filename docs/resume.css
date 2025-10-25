@@ -1,0 +1,139 @@
+/* ---------- base ---------- */
+:root{
+  --accent:#2c7be5;        /* link / chips color */
+  --muted:#6c757d;         /* subtle text */
+  --card-bg:#fff;          /* card background */
+  --line:#e5e7eb;          /* separators */
+}
+body { font-size: 16px; }
+.resume { max-width: 980px; margin: 0 auto; padding: 0 6px 24px; }
+
+/* headings */
+.resume h2 {
+  font-weight: 800;
+  letter-spacing: .2px;
+  margin: 22px 0 14px;
+}
+
+/* ---------- timeline layout ---------- */
+.timeline{
+  position: relative;
+  margin-left: 12px;
+  padding-left: 24px;
+}
+.timeline:before{
+  content:"";
+  position:absolute;
+  top: 0; bottom: 0;
+  left: 4px;
+  width:2px;
+  background: var(--line);
+}
+.item{
+  position: relative;
+  margin: 0 0 18px 0;
+  padding: 14px 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0,0,0,.03);
+}
+.item:before{
+  content:"";
+  position:absolute;
+  left:-11px; top:20px;
+  width:10px; height:10px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #fff;
+}
+
+/* header line (role · org · meta) */
+.header{
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 12px;
+  margin-bottom: 6px;
+}
+.role{
+  font-weight: 700;
+}
+.org{
+  color: var(--muted);
+  font-weight: 500;
+  margin-left: .25rem;
+}
+.meta{
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* bullets within an item */
+.item ul{
+  margin: 6px 0 6px 1.1rem;
+}
+.item li{
+  margin: 2px 0;
+}
+
+/* skill / topic chips */
+.tags{
+  margin-top: 6px;
+}
+.tag{
+  display:inline-block;
+  font-size: 12px;
+  line-height: 1;
+  color:#fff;
+  background: var(--accent);
+  padding: 6px 8px;
+  border-radius: 999px;
+  margin: 2px 6px 0 0;
+  letter-spacing:.2px;
+}
+
+/* subtle hover */
+.item:hover{
+  border-color: #cfd4da;
+  box-shadow: 0 4px 14px rgba(0,0,0,.06);
+  transition: box-shadow .2s ease, border-color .2s ease;
+}
+
+/* spacing between sections inside .resume wrapper */
+.resume > .timeline + h2 { margin-top: 28px; }
+
+/* responsive tweaks */
+@media (max-width:720px){
+  .header { flex-direction: column; align-items:flex-start; }
+  .meta { margin-top: 2px; }
+}
+
+/* ===== Skills & Interests ===== */
+.skills-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:16px;
+  margin-top:10px;
+}
+
+.skill-box{
+  background:#fff;                 
+  border:1px solid rgba(0,0,0,.06);
+  border-radius:14px;
+  padding:16px;
+  box-shadow:0 6px 16px rgba(0,0,0,.05);
+}
+
+.skill-box .title{
+  font-size:.9rem;
+  font-weight:600;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  color:#6c757d;                   
+  margin-bottom:8px;
+}
+
+.skill-box .tags{ margin-top:4px; }

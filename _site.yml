@@ -1,0 +1,19 @@
+name: "yw4662-site"
+title: "Ye Wen | Data Science"
+output_dir: "docs"
+
+navbar:
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Experience"
+      href: experience.html
+    - text: "Dashboard"
+      href: dashboard.html
+  right:
+    - icon: fa-github
+      href: "https://github.com/WenYe2683/p8105_hw4_yw4662.github.io"
+    - icon: fa-linkedin
+      href: "https://www.linkedin.com/in/wenye0116/"
+    - icon: fa-envelope
+      href: "mailto:wenye0116@gmail.com"
