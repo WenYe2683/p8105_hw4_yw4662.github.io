@@ -6,3 +6,5 @@ output:
 ---
 
 Welcome! This site hosts my P8105 Homework 4.
+
+You can find me by clicking tabs on the top-right corner :)

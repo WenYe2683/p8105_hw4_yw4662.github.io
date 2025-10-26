@@ -1,0 +1,115 @@
+---
+title: "Problem 2: NY NOAA Flexdashboard"
+output:
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: scroll
+    theme: cosmo
+    self_contained: true
+output_file: "dashboard_flex.html"
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+library(plotly)
+library(p8105.datasets)
+theme_set(theme_minimal(base_size = 14))
+set.seed(2025)
+
+# Data
+data("ny_noaa", package = "p8105.datasets")
+
+noaa <- ny_noaa %>%
+  mutate(
+    date     = as.Date(date),
+    # NOAA temps are in tenths of °C; convert to °C
+    tmax     = as.numeric(tmax) / 10,
+    tmin     = as.numeric(tmin) / 10,
+    # precip often in tenths of mm, here I kept it in mm for plotting
+    prcp     = as.numeric(prcp) / 10,
+    snow     = as.numeric(snow),
+    month    = factor(format(date, "%b"), levels = month.abb, ordered = TRUE),
+    year     = as.integer(format(date, "%Y")),
+    year_mon = as.Date(paste0(format(date, "%Y-%m"), "-01"))
+  )
+```
+
+Column {.sidebar data-width = 140}
+-------------------------------------------------
+### Explore
+- [Monthly Mean Tmax](#sec-mean-tmax)
+- [Daily Tmin vs Tmax](#sec-scatter)
+- [Tmax by Month](#sec-box)
+- [Snow Days per Year](#sec-snow)
+
+Column
+-------------------------------------------------
+
+### Monthly Mean Max Temperature (°C) — Statewide Line Plot {#sec-mean-tmax}
+
+```{r}
+# FILTER: focus on 1981–2010
+line_df <- noaa %>%
+  filter(between(year, 1981, 2010), !is.na(tmax)) %>%
+  group_by(year_mon) %>%
+  summarise(mean_tmax = mean(tmax), .groups = "drop")
+
+p_line <- ggplot(line_df, aes(year_mon, mean_tmax)) +
+  geom_line(linewidth = 0.8) +
+  labs(x = "Month", y = "Mean Tmax (°C)",
+       title = "NY NOAA: Monthly statewide mean of daily maximum temperature (1981–2010)")
+ggplotly(p_line)
+```
+
+### Daily Tmin vs Tmax (5k-point Sample) - Scatter Plot {#sec-scatter}
+```{r}
+# SAMPLE: 5,000 points
+scatter_df <- noaa %>%
+  filter(!is.na(tmax), !is.na(tmin)) %>%
+  slice_sample(n = 5000)
+
+p_scatter <- ggplot(scatter_df, aes(
+  x = tmin, y = tmax,
+  text = paste0(
+    "Date: ", scatter_df$date,
+    "<br>Tmin: ", round(tmin, 1), " °C",
+    "<br>Tmax: ", round(tmax, 1), " °C"
+  )
+)) +
+  geom_point(alpha = 0.5) +
+  labs(x = "Daily Tmin (°C)", y = "Daily Tmax (°C)",
+       title = "Tmin vs Tmax (random 5k sample)")
+
+ggplotly(p_scatter, tooltip = "text")
+```
+
+### Distribution of Tmax by Month (50k Sample) - Boxplot {#sec-box}
+```{r}
+# SAMPLE: 50,000 rows
+box_df <- noaa %>%
+  filter(!is.na(tmax)) %>%
+  slice_sample(n = 50000)
+
+p_box <- ggplot(box_df, aes(month, tmax)) +
+  geom_boxplot(outlier.alpha = 0.25) +
+  labs(x = "Month", y = "Daily Tmax (°C)",
+       title = "Seasonality in maximum temperature (50k sample)")
+ggplotly(p_box)
+```
+
+### Number of Snow Days Per Year - Bar Plot {#sec-snow}
+```{r}
+# FILTER: same 1981–2010 window
+snow_df <- noaa %>%
+  filter(between(year, 1981, 2010)) %>%
+  mutate(snow_day = snow > 0) %>%
+  group_by(year) %>%
+  summarise(snow_days = sum(snow_day, na.rm = TRUE), .groups = "drop")
+
+p_bar <- ggplot(snow_df, aes(year, snow_days)) +
+  geom_col() +
+  labs(x = "Year", y = "# days with measurable snow",
+       title = "Inter-annual variability in snow days (1981–2010)")
+ggplotly(p_bar)
+```
+
